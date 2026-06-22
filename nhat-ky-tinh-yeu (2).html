@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>💑 Nhật Ký Tình Yêu</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  /* ── HOME ── */
+  #home {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #e0f2fe 0%, #fce7f3 50%, #ede9fe 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .home-title { font-size: 26px; font-weight: 800; color: #1f2937; margin-bottom: 6px; text-align:center; }
+  .home-sub { font-size: 14px; color: #6b7280; margin-bottom: 36px; text-align:center; }
+  .home-cards { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+  .home-card {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 28px 40px; border-radius: 24px; cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s; border: 2px solid transparent;
+  }
+  .home-card:hover { transform: translateY(-5px); }
+  .home-card .icon { font-size: 52px; margin-bottom: 10px; }
+  .home-card .cname { font-size: 20px; font-weight: 800; }
+  .home-card .csub { font-size: 12px; color: #6b7280; margin-top: 4px; }
+  .card-anh { background: linear-gradient(135deg,#dbeafe,#eff6ff); border-color: #bfdbfe; box-shadow: 0 8px 30px #3b82f618; }
+  .card-em  { background: linear-gradient(135deg,#fce7f3,#fdf2f8); border-color: #fbcfe8; box-shadow: 0 8px 30px #ec489918; }
+  .cname-anh { color: #1d4ed8; }
+  .cname-em  { color: #be185d; }
+  .home-note { margin-top: 28px; font-size: 12px; color: #9ca3af; text-align:center; }
+
+  /* ── PAGE ── */
+  #page { display:none; min-height:100vh; }
+  .page-header {
+    padding: 18px 20px 14px; color: white;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .page-header .htitle { font-size: 20px; font-weight: 800; }
+  .page-header .hdate { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+  .back-btn {
+    padding: 6px 14px; border-radius: 20px; border: 1.5px solid rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.2); color: white; font-size: 12px;
+    font-weight: 600; cursor: pointer; backdrop-filter: blur(4px);
+  }
+  .page-inner { max-width: 580px; margin: 0 auto; padding: 0 16px 48px; }
+
+  /* ── PARTNER BANNER ── */
+  .partner-banner {
+    border-radius: 16px; padding: 14px 18px; margin: 14px 0;
+    border: 1.5px solid; backdrop-filter: blur(6px);
+  }
+  .pb-header { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+  .pb-name { font-weight:700; font-size:14px; }
+  .pb-status { margin-left:auto; font-size:11px; color:#6b7280; }
+  .pb-mood { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+  .mood-badge {
+    display:inline-flex; align-items:center; gap:5px;
+    border-radius:20px; padding:3px 10px; font-size:11px; font-weight:600;
+    color:#374151; border:1.5px solid; white-space:nowrap;
+  }
+  .pb-activities { font-size:12px; color:#4b5563; margin-bottom:6px; }
+  .pb-message {
+    border-radius:8px; padding:8px 12px;
+    font-size:12px; font-style:italic; border:1px solid;
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display:flex; gap:6px; margin-bottom:14px;
+    background:rgba(255,255,255,0.5); border-radius:12px; padding:4px;
+  }
+  .tab-btn {
+    flex:1; padding:8px 4px; border-radius:9px; border:none;
+    font-size:11px; font-weight:500; cursor:pointer; transition:all 0.18s;
+    background:transparent; color:#6b7280; line-height:1.3;
+  }
+  .tab-btn.active { color:white; font-weight:700; }
+
+  /* ── FORM CARD ── */
+  .form-card {
+    border-radius:20px; padding:20px 22px;
+    border:1px solid; backdrop-filter:blur(8px);
+  }
+  .form-header { display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+  .form-title { font-weight:800; font-size:16px; }
+  .form-date { font-size:12px; color:#6b7280; }
+  .field-label { font-size:12px; font-weight:700; letter-spacing:0.5px; margin-bottom:5px; display:block; }
+  .field-group { margin-bottom:14px; }
+  textarea, input[type=text] {
+    width:100%; border-radius:10px; padding:9px 12px; font-size:14px;
+    background:rgba(255,255,255,0.9); outline:none; font-family:inherit;
+    color:#1f2937; resize:vertical; transition:border 0.2s;
+  }
+  .mood-grid { display:flex; flex-wrap:wrap; gap:8px; }
+  .mood-btn {
+    display:flex; align-items:center; gap:6px;
+    padding:7px 13px; border-radius:20px; border:2px solid #e5e7eb;
+    background:white; cursor:pointer; font-size:12px; font-weight:500;
+    color:#374151; transition:all 0.18s; font-family:inherit;
+  }
+  .mood-btn.selected { font-weight:700; }
+  .save-btn {
+    width:100%; padding:11px 0; border-radius:12px; border:none;
+    color:white; font-weight:800; font-size:15px; cursor:pointer;
+    letter-spacing:0.3px; transition:opacity 0.2s; font-family:inherit;
+  }
+  .save-btn:disabled { opacity:0.6; cursor:not-allowed; }
+
+  /* ── DIARY LIST ── */
+  .section-title { font-weight:700; font-size:14px; margin-bottom:12px; }
+  .entry-card {
+    border-radius:14px; padding:14px 16px; border:1px solid;
+    margin-bottom:10px; cursor:pointer; transition:box-shadow 0.2s;
+    backdrop-filter:blur(4px);
+  }
+  .entry-header { display:flex; align-items:center; justify-content:space-between; }
+  .entry-date { font-weight:700; font-size:14px; }
+  .toggle-icon { color:#9ca3af; font-size:12px; }
+  .entry-body { margin-top:12px; display:flex; flex-direction:column; gap:10px; }
+  .entry-field-label { font-size:11px; font-weight:700; margin-bottom:3px; }
+  .entry-field-text { font-size:13px; color:#374151; line-height:1.6; }
+  .entry-message-box { border-radius:10px; padding:10px 14px; border:1px solid; }
+  .entry-message-text { font-size:13px; font-style:italic; line-height:1.6; }
+
+  .empty-state { text-align:center; color:#9ca3af; padding:32px 0; font-size:14px; }
+  .loading { text-align:center; color:#9ca3af; padding:20px; font-size:13px; }
+
+  /* ── REALTIME PULSE ── */
+  .realtime-dot {
+    width:8px; height:8px; border-radius:50%; background:#4ade80;
+    display:inline-block; margin-right:5px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  @media(max-width:480px) {
+    .home-card { padding:22px 28px; }
+    .page-header { padding:14px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="home">
+  <div style="font-size:52px;margin-bottom:12px">💑</div>
+  <div class="home-title">Nhật Ký Tình Yêu</div>
+  <div class="home-sub">Không gian riêng tư của hai đứa mình 🌸</div>
+  <div class="home-cards">
+    <div class="home-card card-anh" onclick="enterPage('anh')">
+      <div class="icon">💙</div>
+      <div class="cname cname-anh">Trang Anh</div>
+      <div class="csub">Giao diện xanh pastel</div>
+    </div>
+    <div class="home-card card-em" onclick="enterPage('em')">
+      <div class="icon">🌸</div>
+      <div class="cname cname-em">Trang Em</div>
+      <div class="csub">Giao diện hồng pastel</div>
+    </div>
+  </div>
+  <div class="home-note">
+    <span class="realtime-dot"></span>
+    Dữ liệu thời gian thực qua Firebase — mở trên mọi thiết bị
+  </div>
+</div>
+
+<!-- PAGE -->
+<div id="page">
+  <div class="page-header" id="pageHeader">
+    <div>
+      <div class="htitle" id="pageTitle"></div>
+      <div class="hdate" id="pageDate"></div>
+    </div>
+    <button class="back-btn" onclick="goHome()">← Trang chủ</button>
+  </div>
+  <div class="page-inner">
+    <div id="partnerBanner"></div>
+    <div class="tabs" id="tabs"></div>
+    <div id="tabContent"></div>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAuvn2TcTMQfd7H2Uy6s_RLcUpNNUamaWE",
+  authDomain: "emiu-79c17.firebaseapp.com",
+  databaseURL: "https://emiu-79c17-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "emiu-79c17",
+  storageBucket: "emiu-79c17.firebasestorage.app",
+  messagingSenderId: "42000864245",
+  appId: "1:42000864245:web:4abbaf9109c0ee928306bc",
+  measurementId: "G-0DQWX6LW13"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// ── CONFIG ──────────────────────────────────────────────────────────
+const MOODS = [
+  { value:"happy",  emoji:"🟢", label:"Vui vẻ / Yêu đời",    color:"#4ade80" },
+  { value:"normal", emoji:"🟡", label:"Bình thường / Ổn",     color:"#facc15" },
+  { value:"tired",  emoji:"🔵", label:"Hơi mệt / Cần ôm",    color:"#60a5fa" },
+  { value:"angry",  emoji:"🔴", label:"Quạu / Dễ giận",       color:"#f87171" },
+  { value:"miss",   emoji:"🟣", label:"Nhớ người yêuuu",      color:"#c084fc" },
+];
+
+const CFG = {
+  anh: {
+    name:"Anh", icon:"💙", partner:"em", partnerName:"Em",
+    accent:"#3b82f6", soft:"#eff6ff", mid:"#bfdbfe", dark:"#1d4ed8",
+    bg:"linear-gradient(135deg,#e0f2fe 0%,#dbeafe 50%,#ede9fe 100%)",
+    cardBg:"rgba(255,255,255,0.82)",
+    headerBg:"linear-gradient(90deg,#3b82f6 0%,#6366f1 100%)",
+  },
+  em: {
+    name:"Em", icon:"🌸", partner:"anh", partnerName:"Anh",
+    accent:"#ec4899", soft:"#fdf2f8", mid:"#fbcfe8", dark:"#be185d",
+    bg:"linear-gradient(135deg,#fce7f3 0%,#fdf2f8 50%,#fce7f3 100%)",
+    cardBg:"rgba(255,255,255,0.82)",
+    headerBg:"linear-gradient(90deg,#ec4899 0%,#f43f5e 100%)",
+  }
+};
+
+// ── STATE ────────────────────────────────────────────────────────────
+let currentPerson = null;
+let myEntries = {};
+let partnerEntries = {};
+let currentTab = "write";
+let myUnsub = null;
+let partnerUnsub = null;
+
+// form state
+let fMood = "", fActivities = "", fFeelings = "", fMessage = "";
+
+// ── UTILS ────────────────────────────────────────────────────────────
+function todayStr() {
+  const d = new Date();
+  return `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}/${d.getFullYear()}`;
+}
+function dateKey(s) { return s.replace(/\//g,"-"); }
+
+function moodBadge(value, size="sm") {
+  if (!value) return "";
+  const m = MOODS.find(x=>x.value===value); if(!m) return "";
+  const pad = size==="lg" ? "6px 14px" : "3px 10px";
+  const fs = size==="lg" ? "13px" : "11px";
+  return `<span class="mood-badge" style="background:${m.color}22;border-color:${m.color}66;padding:${pad};font-size:${fs}">${m.emoji} ${m.label}</span>`;
+}
+
+// ── FIREBASE ─────────────────────────────────────────────────────────
+function listenEntries(person, cb) {
+  const r = ref(db, `diary/${person}`);
+  return onValue(r, snap => {
+    cb(snap.exists() ? snap.val() : {});
+  });
+}
+
+async function saveEntry(person, dateStr, data) {
+  const key = dateKey(dateStr);
+  await set(ref(db, `diary/${person}/${key}`), {
+    date: dateStr, ...data, updatedAt: Date.now()
+  });
+}
+
+// ── NAVIGATION ───────────────────────────────────────────────────────
+window.enterPage = function(person) {
+  currentPerson = person;
+  const cfg = CFG[person];
+  fMood=""; fActivities=""; fFeelings=""; fMessage="";
+
+  document.getElementById("home").style.display = "none";
+  const page = document.getElementById("page");
+  page.style.display = "block";
+  page.style.background = cfg.bg;
+
+  const hdr = document.getElementById("pageHeader");
+  hdr.style.background = cfg.headerBg;
+  hdr.style.boxShadow = `0 4px 20px ${cfg.accent}44`;
+  document.getElementById("pageTitle").textContent = `${cfg.icon} Nhật ký của ${cfg.name}`;
+  document.getElementById("pageDate").textContent = `📅 ${todayStr()}`;
+
+  // subscribe realtime
+  if(myUnsub) myUnsub();
+  if(partnerUnsub) partnerUnsub();
+
+  myUnsub = listenEntries(person, entries => {
+    myEntries = entries;
+    const todayKey = dateKey(todayStr());
+    const e = myEntries[todayKey] || {};
+    // sync form state if it's today's entry
+    if(currentTab === "write") {
+      fMood = e.mood || fMood;
+      fActivities = e.activities !== undefined ? e.activities : fActivities;
+      fFeelings = e.feelings !== undefined ? e.feelings : fFeelings;
+      fMessage = e.message !== undefined ? e.message : fMessage;
+      renderTab();
+    } else {
+      renderTab();
+    }
+  });
+
+  partnerUnsub = listenEntries(cfg.partner, entries => {
+    partnerEntries = entries;
+    renderPartnerBanner();
+    if(currentTab==="partner") renderTab();
+  });
+
+  renderTabs();
+  renderPartnerBanner();
+  currentTab = "write";
+  renderTabs();
+  renderTab();
+}
+
+window.goHome = function() {
+  if(myUnsub) myUnsub();
+  if(partnerUnsub) partnerUnsub();
+  currentPerson = null;
+  document.getElementById("page").style.display = "none";
+  document.getElementById("home").style.display = "flex";
+}
+
+window.switchTab = function(tab) {
+  currentTab = tab;
+  renderTabs();
+  renderTab();
+}
+
+// ── RENDER ───────────────────────────────────────────────────────────
+function renderPartnerBanner() {
+  if(!currentPerson) return;
+  const cfg = CFG[currentPerson];
+  const pcfg = CFG[cfg.partner];
+  const todayEntry = partnerEntries[dateKey(todayStr())];
+  const el = document.getElementById("partnerBanner");
+
+  let inner = `
+    <div class="pb-header">
+      <span style="font-size:18px">${pcfg.icon}</span>
+      <span class="pb-name" style="color:${pcfg.dark}">${pcfg.name} hôm nay</span>
+      <span class="pb-status">${todayEntry ? "Đã cập nhật ✓" : "Chưa cập nhật"}</span>
+    </div>`;
+
+  if(todayEntry) {
+    if(todayEntry.mood) inner += `<div class="pb-mood"><span style="font-size:12px;color:#6b7280">Mood:</span>${moodBadge(todayEntry.mood)}</div>`;
+    if(todayEntry.activities) inner += `<div class="pb-activities"><strong>Đang làm:</strong> ${esc(todayEntry.activities)}</div>`;
+    if(todayEntry.message) inner += `<div class="pb-message" style="background:${pcfg.soft};border-color:${pcfg.mid};color:${pcfg.dark}">💌 "${esc(todayEntry.message)}"</div>`;
+  } else {
+    inner += `<div style="font-size:12px;color:#9ca3af">${pcfg.name} chưa viết nhật ký hôm nay...</div>`;
+  }
+
+  el.innerHTML = `<div class="partner-banner" style="background:${pcfg.cardBg};border-color:${pcfg.mid};box-shadow:0 2px 14px ${pcfg.accent}18">${inner}</div>`;
+}
+
+function renderTabs() {
+  const cfg = CFG[currentPerson];
+  const pcfg = CFG[cfg.partner];
+  const tabs = [
+    { id:"write",   label:`✍️ Viết hôm nay` },
+    { id:"my",      label:`${cfg.icon} Của ${cfg.name}` },
+    { id:"partner", label:`${pcfg.icon} Của ${pcfg.name}` },
+  ];
+  document.getElementById("tabs").innerHTML = tabs.map(t => `
+    <button class="tab-btn ${currentTab===t.id?"active":""}"
+      style="${currentTab===t.id ? `background:${cfg.headerBg}` : ""}"
+      onclick="switchTab('${t.id}')">${t.label}</button>
+  `).join("");
+}
+
+function renderTab() {
+  const el = document.getElementById("tabContent");
+  const cfg = CFG[currentPerson];
+  const pcfg = CFG[cfg.partner];
+
+  if(currentTab==="write") {
+    el.innerHTML = renderForm(cfg);
+  } else if(currentTab==="my") {
+    el.innerHTML = `<div class="section-title" style="color:${cfg.dark}">${cfg.icon} Tất cả nhật ký của ${cfg.name}</div>` + renderList(myEntries, cfg, false);
+  } else {
+    el.innerHTML = `<div class="section-title" style="color:${pcfg.dark}">${pcfg.icon} Tất cả nhật ký của ${pcfg.name}</div>` + renderList(partnerEntries, pcfg, true);
+  }
+}
+
+function renderForm(cfg) {
+  const todayKey = dateKey(todayStr());
+  const moods = MOODS.map(m => `
+    <button class="mood-btn ${fMood===m.value?"selected":""}"
+      style="${fMood===m.value ? `border-color:${m.color};background:${m.color}22;font-weight:700` : ""}"
+      onclick="selectMood('${m.value}')">${m.emoji} ${m.label}</button>
+  `).join("");
+
+  return `
+  <div class="form-card" style="background:${cfg.cardBg};border-color:${cfg.mid};box-shadow:0 4px 24px ${cfg.accent}18">
+    <div class="form-header">
+      <span style="font-size:22px">${cfg.icon}</span>
+      <div>
+        <div class="form-title" style="color:${cfg.dark}">Nhật ký hôm nay của ${cfg.name}</div>
+        <div class="form-date">📅 ${todayStr()}</div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" style="color:${cfg.dark}">💫 Mood hôm nay</label>
+      <div class="mood-grid">${moods}</div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" style="color:${cfg.dark}">🗓 Hoạt động trong ngày</label>
+      <textarea rows="2" id="fActivities" placeholder="Đi học, làm việc, chạy deadline sấp mặt..."
+        style="border:1.5px solid ${cfg.mid}" oninput="fActivities=this.value">${esc(fActivities)}</textarea>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" style="color:${cfg.dark}">💭 Cảm nhận / Tâm sự</label>
+      <textarea rows="3" id="fFeelings" placeholder="Hôm nay cảm thấy thế nào? Có gì muốn kể không..."
+        style="border:1.5px solid ${cfg.mid}" oninput="fFeelings=this.value">${esc(fFeelings)}</textarea>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" style="color:${cfg.dark}">💌 Lời nhắn cho ${cfg.partner==="anh"?"Anh":"Em"}</label>
+      <textarea rows="2" id="fMessage" placeholder="Nhắn nhủ điều gì đó nhé..."
+        style="border:1.5px solid ${cfg.mid}" oninput="fMessage=this.value">${esc(fMessage)}</textarea>
+    </div>
+
+    <button class="save-btn" id="saveBtn" style="background:${cfg.headerBg};box-shadow:0 4px 14px ${cfg.accent}44"
+      onclick="handleSave()">💾 Lưu nhật ký</button>
+  </div>`;
+}
+
+function renderList(entries, cfg, isPartner) {
+  const sorted = Object.values(entries).sort((a,b)=>b.updatedAt-a.updatedAt);
+  if(!sorted.length) return `<div class="empty-state">Chưa có nhật ký nào... ✨</div>`;
+  return sorted.map((e,i) => renderEntryCard(e, cfg, isPartner, i)).join("");
+}
+
+function renderEntryCard(e, cfg, isPartner, i) {
+  const id = `entry_${i}`;
+  return `
+  <div class="entry-card" style="background:${cfg.cardBg};border-color:${cfg.mid};box-shadow:0 2px 10px ${cfg.accent}0d"
+    onclick="toggleEntry('${id}')">
+    <div class="entry-header">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="entry-date" style="color:${cfg.dark}">📅 ${e.date}</span>
+        ${e.mood ? moodBadge(e.mood) : ""}
+      </div>
+      <span class="toggle-icon" id="${id}_icon">▼</span>
+    </div>
+    <div class="entry-body" id="${id}_body" style="display:none">
+      ${e.activities ? `<div><div class="entry-field-label" style="color:${cfg.dark}">🗓 Hoạt động</div><div class="entry-field-text">${esc(e.activities)}</div></div>` : ""}
+      ${e.feelings ? `<div><div class="entry-field-label" style="color:${cfg.dark}">💭 Tâm sự</div><div class="entry-field-text">${esc(e.feelings)}</div></div>` : ""}
+      ${e.message ? `<div class="entry-message-box" style="background:${cfg.soft};border-color:${cfg.mid}">
+        <div class="entry-field-label" style="color:${cfg.dark}">💌 Lời nhắn${isPartner?" gửi cho bạn":""}</div>
+        <div class="entry-message-text" style="color:${cfg.dark}">"${esc(e.message)}"</div>
+      </div>` : ""}
+    </div>
+  </div>`;
+}
+
+// ── HANDLERS ─────────────────────────────────────────────────────────
+window.selectMood = function(val) {
+  fMood = val;
+  renderTab();
+  // restore textarea values
+  const a = document.getElementById("fActivities");
+  const f = document.getElementById("fFeelings");
+  const m = document.getElementById("fMessage");
+  if(a) a.value = fActivities;
+  if(f) f.value = fFeelings;
+  if(m) m.value = fMessage;
+}
+
+window.toggleEntry = function(id) {
+  const body = document.getElementById(id+"_body");
+  const icon = document.getElementById(id+"_icon");
+  if(!body) return;
+  const open = body.style.display !== "none";
+  body.style.display = open ? "none" : "flex";
+  icon.textContent = open ? "▼" : "▲";
+}
+
+window.handleSave = async function() {
+  if(!currentPerson) return;
+  // sync textarea values
+  const a = document.getElementById("fActivities");
+  const f = document.getElementById("fFeelings");
+  const m = document.getElementById("fMessage");
+  if(a) fActivities = a.value;
+  if(f) fFeelings = f.value;
+  if(m) fMessage = m.value;
+
+  const btn = document.getElementById("saveBtn");
+  if(btn) { btn.disabled=true; btn.textContent="⏳ Đang lưu..."; }
+  try {
+    await saveEntry(currentPerson, todayStr(), {
+      mood: fMood, activities: fActivities,
+      feelings: fFeelings, message: fMessage
+    });
+    if(btn) { btn.textContent="✅ Đã lưu!"; setTimeout(()=>{ if(btn){ btn.disabled=false; btn.textContent="💾 Lưu nhật ký"; }},2000); }
+  } catch(err) {
+    if(btn) { btn.disabled=false; btn.textContent="❌ Lỗi, thử lại"; }
+    console.error(err);
+  }
+}
+
+// ── HELPERS ──────────────────────────────────────────────────────────
+function esc(s) {
+  if(!s) return "";
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/\n/g,"<br>");
+}
+window.fActivities = fActivities;
+window.fFeelings = fFeelings;
+window.fMessage = fMessage;
+</script>
+</body>
+</html>
